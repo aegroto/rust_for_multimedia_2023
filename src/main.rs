@@ -1,4 +1,11 @@
 use image::GrayImage;
+use matrix::Matrix;
+use sobel::SobelMode;
+
+mod matrix;
+mod conv;
+mod helpers;
+mod sobel;
 
 fn main() {
     let image = image::io::Reader::open("assets/myownlena.png")
@@ -20,9 +27,23 @@ fn main() {
         b_plane[i] = pixel.0[2];
     }
 
-    save_grayscale("output/r_plane.png", r_plane, width, height);
-    save_grayscale("output/g_plane.png", g_plane, width, height);
-    save_grayscale("output/b_plane.png", b_plane, width, height);
+    save_grayscale("output/r_plane.png", r_plane.clone(), width, height);
+    save_grayscale("output/g_plane.png", g_plane.clone(), width, height);
+    save_grayscale("output/b_plane.png", b_plane.clone(), width, height);
+
+    save_grads(r_plane.clone(), "output/r_hgrads.png", width, height, SobelMode::HORIZONTAL);
+    save_grads(g_plane.clone(), "output/g_hgrads.png", width, height, SobelMode::HORIZONTAL);
+    save_grads(b_plane.clone(), "output/b_hgrads.png", width, height, SobelMode::HORIZONTAL);
+
+    save_grads(r_plane, "output/r_vgrads.png", width, height, SobelMode::VERTICAL);
+    save_grads(g_plane, "output/g_vgrads.png", width, height, SobelMode::VERTICAL);
+    save_grads(b_plane, "output/b_vgrads.png", width, height, SobelMode::VERTICAL);
+}
+
+fn save_grads(plane: Vec<u8>, path: &str, width: u32, height: u32, mode: SobelMode) {
+    let matrix = Matrix::new(plane, width as usize, height as usize);
+    let grads = sobel::sobel(matrix, mode);
+    save_grayscale(path, grads.values().clone(), width, height);
 }
 
 fn save_grayscale(path: &str, pixels: Vec<u8>, width: u32, height: u32) {
