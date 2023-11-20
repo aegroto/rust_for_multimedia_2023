@@ -1,3 +1,6 @@
+#![feature(test)]
+extern crate test;
+
 use image::GrayImage;
 use matrix::Matrix;
 use sobel::SobelMode;

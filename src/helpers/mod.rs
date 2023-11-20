@@ -1,7 +1,12 @@
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
+
 use crate::matrix::Matrix;
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod bench;
 
 pub fn normalize(x: u8) -> f32 {
     (x as f32) / 255.0
@@ -19,6 +24,14 @@ pub fn normalize_image_matrix(image: &Matrix<u8>) -> Matrix<f32> {
     )
 }
 
+#[allow(dead_code)]
+pub fn normalize_image_matrix_pariter(image: &Matrix<u8>) -> Matrix<f32> {
+    Matrix::new(
+        image.values().par_iter().map(|v| normalize(*v)).collect::<Vec<f32>>(), 
+        image.width(), 
+        image.height()
+    )
+}
 
 pub fn denormalize_image_matrix(image: &Matrix<f32>) -> Matrix<u8> {
     Matrix::new(
