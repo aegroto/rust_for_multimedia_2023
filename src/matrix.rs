@@ -39,7 +39,7 @@ impl<T: Copy> Matrix<T> {
 
     pub fn get(&self, x: usize, y: usize) -> T {
         self.check_indices(x, y);
-        return self.values[y * self.width + x];
+        self.values[y * self.width + x]
     }
 
     pub fn set(&mut self, x: usize, y: usize, value: T) {
@@ -85,8 +85,8 @@ impl<T: Copy> Clone for Matrix<T> {
     fn clone(&self) -> Self {
         Self {
             values: self.values.clone(),
-            width: self.width.clone(),
-            height: self.height.clone(),
+            width: self.width,
+            height: self.height,
         }
     }
 }

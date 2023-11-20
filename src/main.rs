@@ -34,13 +34,13 @@ fn main() {
     save_grayscale("output/g_plane.png", g_plane.clone(), width, height);
     save_grayscale("output/b_plane.png", b_plane.clone(), width, height);
 
-    save_grads(r_plane.clone(), "output/r_hgrads.png", width, height, SobelMode::HORIZONTAL);
-    save_grads(g_plane.clone(), "output/g_hgrads.png", width, height, SobelMode::HORIZONTAL);
-    save_grads(b_plane.clone(), "output/b_hgrads.png", width, height, SobelMode::HORIZONTAL);
+    save_grads(r_plane.clone(), "output/r_hgrads.png", width, height, SobelMode::Horizontal);
+    save_grads(g_plane.clone(), "output/g_hgrads.png", width, height, SobelMode::Horizontal);
+    save_grads(b_plane.clone(), "output/b_hgrads.png", width, height, SobelMode::Horizontal);
 
-    save_grads(r_plane, "output/r_vgrads.png", width, height, SobelMode::VERTICAL);
-    save_grads(g_plane, "output/g_vgrads.png", width, height, SobelMode::VERTICAL);
-    save_grads(b_plane, "output/b_vgrads.png", width, height, SobelMode::VERTICAL);
+    save_grads(r_plane, "output/r_vgrads.png", width, height, SobelMode::Vertical);
+    save_grads(g_plane, "output/g_vgrads.png", width, height, SobelMode::Vertical);
+    save_grads(b_plane, "output/b_vgrads.png", width, height, SobelMode::Vertical);
 }
 
 fn save_grads(plane: Vec<u8>, path: &str, width: u32, height: u32, mode: SobelMode) {
