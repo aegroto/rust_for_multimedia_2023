@@ -27,6 +27,7 @@ impl<T: Copy> Matrix<T> {
         &self.values
     }
 
+    #[allow(dead_code)]
     pub fn values_mut(&mut self) -> &mut Vec<T> {
         &mut self.values
     }
@@ -62,6 +63,7 @@ impl<T: Copy> Matrix<T> {
         flipped_matrix 
     }
 
+    #[allow(dead_code)]
     pub fn transposed(&self) -> Self {
         let mut transposed = Self {
             values: self.values.clone(),

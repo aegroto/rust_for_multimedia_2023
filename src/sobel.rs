@@ -1,4 +1,4 @@
-use crate::{matrix::Matrix, helpers::{normalize, denormalize, normalize_image_matrix, denormalize_image_matrix}, conv::conv2d};
+use crate::{matrix::Matrix, helpers::{normalize_image_matrix, denormalize_image_matrix}, conv::conv2d};
 
 pub enum SobelMode {
     HORIZONTAL,
