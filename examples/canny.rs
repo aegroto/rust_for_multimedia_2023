@@ -9,7 +9,7 @@ use rust_for_multimedia_2023::{
     conv::conv2d,
     drog,
     helpers::{denormalize_image_matrix, normalize_image_matrix},
-    matrix::Matrix, edge::{Edge, ThresholdedEdge}, nonmax_suppression::perform_nonmax_suppression, hysteresis_thresholding::perform_hysteresis_thresholding,
+    matrix::Matrix, edge::{Edge, ThresholdedEdge}, nonmax_suppression::perform_nonmax_suppression, hysteresis_thresholding::perform_hysteresis_thresholding, edge_linking::perform_edge_linking,
 };
 
 fn main() {
@@ -52,9 +52,12 @@ fn main() {
     save_edges_magnitude("output/suppressed_edges_magnitude.png", suppressed_edges_matrix.clone());
 
     println!("Thresholding edges...");
-    let suppressed_edges_matrix = perform_nonmax_suppression(&edges_matrix, 5);
-    let thresholded_edges = perform_hysteresis_thresholding(&suppressed_edges_matrix, 0.2, 0.5);
+    let thresholded_edges = perform_hysteresis_thresholding(&suppressed_edges_matrix, 0.2, 0.35);
     save_thresholded_edges("output/thresholded_edges.png", thresholded_edges.clone());
+
+    println!("Linking edges...");
+    let linked_edges = perform_edge_linking(&suppressed_edges_matrix, &thresholded_edges, 5);
+    save_thresholded_edges("output/linked_edges.png", linked_edges.clone());
 }
 
 fn drog_response_to_edge(x_matrix: &Matrix<f32>, y_matrix: &Matrix<f32>) -> Matrix<Edge> {
