@@ -2,13 +2,7 @@
 extern crate test;
 
 use image::GrayImage;
-use matrix::Matrix;
-use sobel::SobelMode;
-
-mod matrix;
-mod conv;
-mod helpers;
-mod sobel;
+use rust_for_multimedia_2023::{sobel::{SobelMode, self}, matrix::Matrix};
 
 fn main() {
     let image = image::io::Reader::open("assets/myownlena.png")
