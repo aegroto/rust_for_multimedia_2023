@@ -4,11 +4,12 @@ extern crate test;
 use std::f32::consts::E;
 
 use image::GrayImage;
+use itertools::Itertools;
 use rust_for_multimedia_2023::{
     conv::conv2d,
     drog,
     helpers::{denormalize_image_matrix, normalize_image_matrix},
-    matrix::Matrix,
+    matrix::Matrix, edge::Edge, nonmax_suppression::perform_nonmax_suppression,
 };
 
 fn main() {
@@ -38,8 +39,28 @@ fn main() {
     let x_drog_response = conv2d(&normalized_image, &x_drog_kernel);
     let y_drog_response = conv2d(&normalized_image, &y_drog_kernel);
 
-    save_normalized_image("output/x_drog_response.png", x_drog_response);
-    save_normalized_image("output/y_drog_response.png", y_drog_response);
+    save_normalized_image("output/x_drog_response.png", x_drog_response.clone());
+    save_normalized_image("output/y_drog_response.png", y_drog_response.clone());
+
+    let edges_matrix = drog_response_to_edge(&x_drog_response, &y_drog_response);
+    save_edges_magnitude("output/edges_magnitude.png", edges_matrix.clone());
+
+    let suppressed_edges_matrix = perform_nonmax_suppression(&edges_matrix, 5);
+
+    save_edges_magnitude("output/suppressed_edges_magnitude.png", suppressed_edges_matrix.clone());
+}
+
+fn drog_response_to_edge(x_matrix: &Matrix<f32>, y_matrix: &Matrix<f32>) -> Matrix<Edge> {
+    let mut edges = Vec::new();
+
+    let x_values = x_matrix.values();
+    let y_values = y_matrix.values();
+
+    for i in 0..x_values.len() {
+        edges.push(Edge::new(x_values[i], y_values[i]));
+    }
+
+    Matrix::new(edges, x_matrix.width(), x_matrix.height())
 }
 
 fn save_grayscale(path: &str, pixels: Vec<u8>, width: u32, height: u32) {
@@ -49,6 +70,22 @@ fn save_grayscale(path: &str, pixels: Vec<u8>, width: u32, height: u32) {
 
 fn save_normalized_image(path: &str, normalized_image: Matrix<f32>) {
     let denormalized = denormalize_image_matrix(&normalized_image);
+    let plane = GrayImage::from_raw(
+        denormalized.width() as u32,
+        denormalized.height() as u32,
+        denormalized.values().clone(),
+    )
+    .unwrap();
+    plane.save(path).unwrap();
+}
+
+fn save_edges_magnitude(path: &str, edges: Matrix<Edge>) {
+    let magnitudes_image = Matrix::new(
+        edges.values().iter().map(|edge| edge.get_magnitude()).collect_vec(),
+        edges.width(),
+        edges.height()
+    );
+    let denormalized = denormalize_image_matrix(&magnitudes_image);
     let plane = GrayImage::from_raw(
         denormalized.width() as u32,
         denormalized.height() as u32,

@@ -6,3 +6,5 @@ pub mod conv;
 pub mod helpers;
 pub mod sobel;
 pub mod drog;
+pub mod edge;
+pub mod nonmax_suppression;
